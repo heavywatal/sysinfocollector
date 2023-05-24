@@ -18,7 +18,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "black",
-  "pyproject-flake8",
+  "ruff",
 ]
 
 [project.urls]
@@ -27,8 +27,8 @@ Source = "https://github.com/heavywatal/sysinfocollector"
 [tool.pyright]
 typeCheckingMode = "strict"
 
-[tool.flake8]
-max-line-length = 88
+[tool.ruff]
+select = ["E", "F", "W", "I"]
 
 [tool.pytest]
 addopts = "-p no:cacheprovider"
