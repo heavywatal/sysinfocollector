@@ -1,8 +1,8 @@
 import datetime
-import importlib.resources as resources
 import json
 import os
 import pprint
+from importlib import resources
 from pathlib import Path
 
 import polars as pl
@@ -17,14 +17,14 @@ os.environ["POLARS_FMT_STR_LEN"] = "65535"
 
 response_dir = Path(os.getenv("SICE_RESPONSE_DIR", "."))
 response_dir.mkdir(0o755, exist_ok=True)
-reportr = str(response_dir / "report.R")
+reportr = response_dir / "report.R"
 reportr_src = resources.files("sice").joinpath("report.R")
 template = reportr_src.open().read()
-with open(reportr, "w") as fout:
+with reportr.open("w") as fout:
     fout.write(template.format(SICE_URL=os.getenv("SICE_URL")))
 
 app = FastAPI()
-pl.Config.set_tbl_hide_dataframe_shape(True)
+pl.Config.set_tbl_hide_dataframe_shape(active=True)
 
 
 @app.get("/")
@@ -47,10 +47,10 @@ async def create_report(report: dict[str, str]):
 async def create_view():
     responses = read_responses()
     if list_file := os.getenv("SICE_STUDENTS_LIST"):
-        df = pl.read_csv(list_file, separator="\t")
-        df = df.join(responses, on="id", how="outer")
+        tbl = pl.read_csv(list_file, separator="\t")
+        tbl = tbl.join(responses, on="id", how="outer")
     else:
-        df = responses
+        tbl = responses
     content = """<html>
 <head>
 <style>
@@ -92,21 +92,20 @@ tr:nth-child(even) {
 </style>
 <body>
 """
-    content += df._repr_html_().replace("&quot;", "")
+    content += tbl._repr_html_().replace("&quot;", "")  # noqa: SLF001
     content += "</body></html>"
     return HTMLResponse(content=content)
 
 
 def read_responses():
     rows = [pl.read_ndjson(p) for p in response_dir.glob("*.json")]
-    df = pl.concat(rows, how="diagonal")
-    return df
+    return pl.concat(rows, how="diagonal")
 
 
 def save(report: dict[str, str]):
     report["time"] = datetime.datetime.now().isoformat(timespec="seconds")
     outfile = response_dir / (report["id"] + ".json")
-    with open(outfile, "w") as fout:
+    with outfile.open("w") as fout:
         json.dump(jsonable_encoder(report), fout)
 
 

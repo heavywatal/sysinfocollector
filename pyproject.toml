@@ -28,7 +28,16 @@ Source = "https://github.com/heavywatal/sysinfocollector"
 typeCheckingMode = "strict"
 
 [tool.ruff]
-select = ["E", "F", "W", "I"]
+select = ["ALL"]
+ignore = [
+  "D",    # docstring
+  "ANN",  # annotation
+  "T201", # print
+  "S101", # assert
+  "S603", # subprocess
+  "DTZ",  # timezone
+  "COM",  # trailing comma
+]
 
 [tool.pytest]
 addopts = "-p no:cacheprovider"
