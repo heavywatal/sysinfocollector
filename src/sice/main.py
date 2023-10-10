@@ -9,7 +9,7 @@ import polars as pl
 import uvicorn
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import FileResponse, HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
 
 os.environ["POLARS_FMT_MAX_COLS"] = "255"
 os.environ["POLARS_FMT_MAX_ROWS"] = "255"
@@ -40,7 +40,7 @@ async def r():
 @app.post("/report")
 async def create_report(report: dict[str, str]):
     save(report)
-    return message(report)
+    return PlainTextResponse(message(report))
 
 
 @app.get("/view/")
@@ -94,7 +94,7 @@ tr:nth-child(even) {
 """
     content += tbl._repr_html_().replace("&quot;", "")  # noqa: SLF001
     content += "</body></html>"
-    return HTMLResponse(content=content)
+    return HTMLResponse(content)
 
 
 def read_responses():
