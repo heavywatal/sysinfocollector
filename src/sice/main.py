@@ -53,49 +53,10 @@ async def create_view():
         tbl = tbl.join(responses, on="id", how="outer")
     else:
         tbl = responses
-    content = """<html>
-<head>
-<style>
-html {
-  font-family: sans-serif;
-}
-
-table,
-thead,
-tbody,
-tfoot,
-tr,
-th,
-td {
-  border: none;
-}
-
-table {
-  white-space: nowrap;
-}
-
-tr {
-  vertical-align: ;
-}
-
-th {
-  vertical-align: middle;
-  font-weight: normal;
-}
-
-td {
-  vertical-align: middle;
-  padding: 2px 4px;
-}
-
-tr:nth-child(even) {
-  background-color: #eeeeee;
-}
-</style>
-<body>
-"""
-    content += tbl._repr_html_().replace("&quot;", "")  # noqa: SLF001
-    content += "</body></html>"
+    with resources.files("sice").joinpath("view.html").open() as fin:
+        view_html = Template(fin.read())
+    body = tbl._repr_html_().replace("&quot;", "")  # noqa: SLF001
+    content = view_html.safe_substitute(body=body)
     return HTMLResponse(content)
 
 
