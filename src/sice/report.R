@@ -36,7 +36,7 @@ body = append(body, as.list(installed))
 body$libPaths = paste(.libPaths(), collapse = ":")
 # str(body)
 
-url = "{SICE_URL}/report"
+url = "${SICE_URL}/report"
 if (!startsWith(url, "https")) url = "localhost:8000/report"
 res = httr::POST(url, body = body, encode = "json")
 cat(httr::content(res))

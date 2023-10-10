@@ -4,6 +4,7 @@ import os
 import pprint
 from importlib import resources
 from pathlib import Path
+from string import Template
 
 import polars as pl
 import uvicorn
@@ -19,9 +20,10 @@ response_dir = Path(os.getenv("SICE_RESPONSE_DIR", "."))
 response_dir.mkdir(0o755, exist_ok=True)
 reportr = response_dir / "report.R"
 reportr_src = resources.files("sice").joinpath("report.R")
-template = reportr_src.open().read()
+with reportr_src.open() as fin:
+    template = Template(fin.read())
 with reportr.open("w") as fout:
-    fout.write(template.format(SICE_URL=os.getenv("SICE_URL")))
+    fout.write(template.safe_substitute(SICE_URL=os.getenv("SICE_URL")))
 
 app = FastAPI()
 pl.Config.set_tbl_hide_dataframe_shape(active=True)
