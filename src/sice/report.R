@@ -36,7 +36,15 @@ body = append(body, as.list(installed))
 body$libPaths = paste(.libPaths(), collapse = ":")
 # str(body)
 
+post = function(url, body) {
+  json = jsonlite::toJSON(body, auto_unbox = TRUE)
+  handle = curl::new_handle()
+  curl::handle_setopt(handle, postfields = json)
+  curl::handle_setheaders(handle, "Content-Type" = "application/json")
+  curl::curl_fetch_memory(url, handle)
+}
+
 url = "${SICE_URL}/report"
 if (!startsWith(url, "https")) url = "localhost:8000/report"
-res = httr::POST(url, body = body, encode = "json")
-cat(httr::content(res))
+res = post(url, body)
+cat(rawToChar(res$content))
