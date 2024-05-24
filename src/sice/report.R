@@ -31,7 +31,10 @@ body = list()
 body$id = student_id
 body$platform = Rversion$platform
 body$R = paste(Rversion$major, Rversion$minor, sep = ".")
-if (require("rstudioapi")) body$RStudio = as.character(rstudioapi::versionInfo()$version)
+body$RStudio = tryCatch(
+  as.character(rstudioapi::versionInfo()$version),
+  error = warning
+)
 body = append(body, as.list(installed))
 body$libPaths = paste(.libPaths(), collapse = ":")
 # str(body)
