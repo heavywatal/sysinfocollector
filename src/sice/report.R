@@ -39,6 +39,12 @@ body = append(body, as.list(installed))
 body$libPaths = paste(.libPaths(), collapse = ":")
 # str(body)
 
+assure_install = function(pkg, ...) {
+  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg, ...)
+}
+assure_install("jsonlite")
+assure_install("curl")
+
 post = function(url, body) {
   json = jsonlite::toJSON(body, auto_unbox = TRUE)
   handle = curl::new_handle()
