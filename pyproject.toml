@@ -8,7 +8,7 @@ authors = [{name = "Watal M. Iwasaki", email = "heavywatal@gmail.com"}]
 license = {file = "LICENSE"}
 readme = "README.md"
 dynamic = ["description", "version"]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 dependencies = [
   "fastapi",
   "polars",
@@ -17,7 +17,6 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "black",
   "ruff",
 ]
 
@@ -27,17 +26,19 @@ Source = "https://github.com/heavywatal/sysinfocollector"
 [tool.pyright]
 typeCheckingMode = "strict"
 
-[tool.ruff]
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-  "D",    # docstring
-  "ANN",  # annotation
+  "D1",   # missing docstring
+  "D203", # incompatible
+  "D213", # incompatible
+  "ANN101", # self
+  "ANN401", # Any
   "T201", # print
   "S101", # assert
-  "S603", # subprocess
   "DTZ",  # timezone
-  "COM",  # trailing comma
+  "COM812", # trailing comma
+  "ISC001", # may conflict with formatter
+  "TD",   # todo
+  "FIX",  # todo
 ]
-
-[tool.pytest]
-addopts = "-p no:cacheprovider"
