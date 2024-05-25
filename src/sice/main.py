@@ -1,4 +1,5 @@
 import datetime
+import functools
 import json
 import os
 import pprint
@@ -10,23 +11,17 @@ import polars as pl
 import uvicorn
 from fastapi import FastAPI
 from fastapi.encoders import jsonable_encoder
-from fastapi.responses import FileResponse, HTMLResponse, PlainTextResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse
 
-os.environ["POLARS_FMT_MAX_COLS"] = "255"
-os.environ["POLARS_FMT_MAX_ROWS"] = "255"
-os.environ["POLARS_FMT_STR_LEN"] = "65535"
+pl.Config.set_tbl_hide_dataframe_shape(active=True)
+pl.Config.set_tbl_cols(255)
+pl.Config.set_tbl_rows(255)
+pl.Config.set_fmt_str_lengths(65535)
 
 response_dir = Path(os.getenv("SICE_RESPONSE_DIR", "."))
 response_dir.mkdir(0o755, exist_ok=True)
-reportr = response_dir / "report.R"
-reportr_src = resources.files("sice").joinpath("report.R")
-with reportr_src.open() as fin:
-    template = Template(fin.read())
-with reportr.open("w") as fout:
-    fout.write(template.safe_substitute(SICE_URL=os.getenv("SICE_URL")))
 
 app = FastAPI()
-pl.Config.set_tbl_hide_dataframe_shape(active=True)
 
 
 @app.get("/")
@@ -35,8 +30,8 @@ async def root() -> dict[str, str]:
 
 
 @app.get("/report.R")
-async def r() -> FileResponse:
-    return FileResponse(reportr)
+async def r() -> PlainTextResponse:
+    return PlainTextResponse(_report_r())
 
 
 @app.post("/report")
@@ -79,6 +74,14 @@ Hello, {res["id"]}. Thank you for submitting your system information.
 
 {pprint.pformat(res)}
 """
+
+
+@functools.cache
+def _report_r() -> str:
+    src = resources.files("sice").joinpath("report.R")
+    with src.open() as fin:
+        template = Template(fin.read())
+    return template.safe_substitute(SICE_URL=os.getenv("SICE_URL"))
 
 
 if __name__ == "__main__":
