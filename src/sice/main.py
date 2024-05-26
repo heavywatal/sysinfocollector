@@ -1,11 +1,12 @@
+import argparse
 import datetime
 import functools
 import json
-import os
 import pprint
 from importlib import resources
 from pathlib import Path
 from string import Template
+from typing import TypedDict
 
 import polars as pl
 import uvicorn
@@ -18,9 +19,18 @@ pl.Config.set_tbl_cols(255)
 pl.Config.set_tbl_rows(255)
 pl.Config.set_fmt_str_lengths(65535)
 
-response_dir = Path(os.getenv("SICE_RESPONSE_DIR", "."))
-response_dir.mkdir(0o755, exist_ok=True)
 
+class Config(TypedDict):
+    url: str
+    list: Path
+    outdir: Path
+
+
+config: Config = {
+    "url": "http://localhost",
+    "list": Path(),
+    "outdir": Path(),
+}
 app = FastAPI()
 
 
@@ -43,8 +53,8 @@ async def create_report(report: dict[str, str]) -> PlainTextResponse:
 @app.get("/view/")
 async def create_view() -> HTMLResponse:
     responses = read_responses()
-    if list_file := os.getenv("SICE_STUDENTS_LIST"):
-        tbl = pl.read_csv(list_file, separator="\t")
+    if config["list"].exists():
+        tbl = pl.read_csv(config["list"], separator="\t")
         tbl = tbl.join(responses, on="id", how="outer_coalesce")
     else:
         tbl = responses
@@ -57,13 +67,13 @@ async def create_view() -> HTMLResponse:
 
 
 def read_responses() -> pl.DataFrame:
-    rows = [pl.read_ndjson(p) for p in response_dir.glob("*.json")]
+    rows = [pl.read_ndjson(p) for p in config["outdir"].glob("*.json")]
     return pl.concat(rows, how="diagonal")
 
 
 def save(report: dict[str, str]) -> None:
     report["time"] = datetime.datetime.now().isoformat(timespec="seconds")
-    outfile = response_dir / (report["id"] + ".json")
+    outfile = config["outdir"] / (report["id"] + ".json")
     with outfile.open("w") as fout:
         json.dump(jsonable_encoder(report), fout)
 
@@ -81,8 +91,18 @@ def _report_r() -> str:
     src = resources.files("sice").joinpath("report.R")
     with src.open() as fin:
         template = Template(fin.read())
-    return template.safe_substitute(SICE_URL=os.getenv("SICE_URL"))
+    return template.safe_substitute(SICE_URL=config["outdir"])
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, port=8000, log_level="info")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--url", default=config["url"])
+    parser.add_argument("-l", "--list", type=Path, default=config["list"])
+    parser.add_argument("-o", "--outdir", type=Path, default=config["outdir"])
+    parser.add_argument("-p", "--port", type=int, default=8000)
+    args = parser.parse_args()
+    config["url"] = args.url
+    config["list"] = args.list
+    config["outdir"] = args.outdir
+    config["outdir"].mkdir(0o755, exist_ok=True)
+    uvicorn.run(app, port=args.port, log_level="info")

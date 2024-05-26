@@ -11,9 +11,7 @@ pip3 install -v -e .[dev]
 
 Run sice:
 ```sh
-export SICE_STUDENTS_LIST="../list.tsv"
-export SICE_URL="https://example.com/sice"
-uvicorn sice.main:app
+python3 -m sice.main -l id_list.tsv -o outdir -u "https://example.com/sice"
 ```
 
 Students report their system information from R console:
@@ -22,4 +20,4 @@ student_id = "C1SB0000"
 source("https://example.com/sice/report.R")
 ```
 
-View collected infomation at `${SICE_URL}/view/`.
+View collected infomation at `${URL}/view/`.
