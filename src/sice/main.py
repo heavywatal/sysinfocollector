@@ -60,7 +60,7 @@ async def create_view() -> HTMLResponse:
         tbl = responses
     with resources.files("sice").joinpath("view.html").open() as fin:
         view_html = Template(fin.read())
-    body = tbl._repr_html_()  # noqa: SLF001 # type: ignore[reportPrivateUsage]
+    body = tbl._repr_html_()  # type: ignore[reportPrivateUsage]
     body = body.replace("&quot;", "")
     content = view_html.safe_substitute(body=body)
     return HTMLResponse(content)
