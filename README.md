@@ -2,10 +2,10 @@
 
 Install sice and its dependencies:
 ```sh
-python3 -m venv ~/.virtualenvs/fapi
-source ~/.virtualenvs/fapi/bin/activate
 git clone https://github.com/heavywatal/sysinfocollector.git
 cd sysinfocollector/
+python3 -m venv .venv
+source .venv/bin/activate
 pip3 install -v -e .[dev]
 ```
 
