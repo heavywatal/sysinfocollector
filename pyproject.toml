@@ -32,7 +32,6 @@ ignore = [
   "D1",   # missing docstring
   "D203", # incompatible
   "D213", # incompatible
-  "ANN101", # self
   "ANN401", # Any
   "T201", # print
   "S101", # assert
