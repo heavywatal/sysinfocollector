@@ -40,7 +40,9 @@ body$libPaths = paste(.libPaths(), collapse = ":")
 # str(body)
 
 assure_install = function(pkg, ...) {
-  if (!requireNamespace(pkg, quietly = TRUE)) install.packages(pkg, ...)
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, ..., repos = c(CRAN = "https://cloud.r-project.org"))
+  }
 }
 assure_install("jsonlite")
 assure_install("curl")
