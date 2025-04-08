@@ -91,7 +91,7 @@ def _report_r() -> str:
     src = resources.files("sice").joinpath("report.R")
     with src.open() as fin:
         template = Template(fin.read())
-    return template.safe_substitute(SICE_URL=config["outdir"])
+    return template.safe_substitute(SICE_URL=config["url"])
 
 
 if __name__ == "__main__":
