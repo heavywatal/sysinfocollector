@@ -55,7 +55,7 @@ async def create_view() -> HTMLResponse:
     responses = read_responses()
     if config["list"].exists():
         tbl = pl.read_csv(config["list"], separator="\t")
-        tbl = tbl.join(responses, on="id", how="outer", coalesce=True)
+        tbl = tbl.join(responses, on="id", how="full", coalesce=True)
     else:
         tbl = responses
     with resources.files("sice").joinpath("view.html").open() as fin:
