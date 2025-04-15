@@ -55,7 +55,8 @@ async def create_view() -> HTMLResponse:
     responses = read_responses()
     if config["list"].exists():
         tbl = pl.read_csv(config["list"], separator="\t")
-        tbl = tbl.join(responses, on="id", how="full", coalesce=True)
+        if not responses.is_empty():
+            tbl = tbl.join(responses, on="id", how="full", coalesce=True)
     else:
         tbl = responses
     with resources.files("sice").joinpath("view.html").open() as fin:
@@ -68,6 +69,8 @@ async def create_view() -> HTMLResponse:
 
 def read_responses() -> pl.DataFrame:
     rows = [pl.read_ndjson(p) for p in config["outdir"].glob("*.json")]
+    if not rows:
+        return pl.DataFrame()
     return pl.concat(rows, how="diagonal")
 
 
