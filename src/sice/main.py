@@ -20,6 +20,20 @@ pl.Config.set_tbl_rows(255)
 pl.Config.set_fmt_str_lengths(65535)
 
 
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-u", "--url", default=config["url"])
+    parser.add_argument("-l", "--list", type=Path, default=config["list"])
+    parser.add_argument("-o", "--outdir", type=Path, default=config["outdir"])
+    parser.add_argument("-p", "--port", type=int, default=8000)
+    args = parser.parse_args()
+    config["url"] = args.url
+    config["list"] = args.list
+    config["outdir"] = args.outdir
+    config["outdir"].mkdir(0o755, exist_ok=True)
+    uvicorn.run(app, port=args.port, log_level="info")
+
+
 class Config(TypedDict):
     url: str
     list: Path
@@ -98,14 +112,4 @@ def _report_r() -> str:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-u", "--url", default=config["url"])
-    parser.add_argument("-l", "--list", type=Path, default=config["list"])
-    parser.add_argument("-o", "--outdir", type=Path, default=config["outdir"])
-    parser.add_argument("-p", "--port", type=int, default=8000)
-    args = parser.parse_args()
-    config["url"] = args.url
-    config["list"] = args.list
-    config["outdir"] = args.outdir
-    config["outdir"].mkdir(0o755, exist_ok=True)
-    uvicorn.run(app, port=args.port, log_level="info")
+    main()

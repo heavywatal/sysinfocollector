@@ -4,14 +4,14 @@ Install sice and its dependencies:
 ```sh
 git clone https://github.com/heavywatal/sysinfocollector.git
 cd sysinfocollector/
-python3 -m venv .venv
+uv venv --allow-existing
 source .venv/bin/activate
-pip3 install -v -e .[dev]
+uv pip install -v -e .[dev]
 ```
 
 Run sice:
 ```sh
-python3 -m sice.main -l id_list.tsv -o outdir -u "https://example.com/sice"
+sice -l id_list.tsv -o outdir -u "https://example.com/sice"
 ```
 
 Students report their system information from R console:

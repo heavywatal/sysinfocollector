@@ -23,6 +23,9 @@ dev = [
 [project.urls]
 Source = "https://github.com/heavywatal/sysinfocollector"
 
+[project.scripts]
+sice = "sice.main:main"
+
 [tool.pyright]
 typeCheckingMode = "strict"
 
