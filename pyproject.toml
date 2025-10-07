@@ -1,23 +1,14 @@
-[build-system]
-requires = ["flit_core >=3.8,<4"]
-build-backend = "flit_core.buildapi"
-
 [project]
 name = "sice"
+version = "0.1.0"
+description = "System Information Collector for Education"
 authors = [{name = "Watal M. Iwasaki", email = "heavywatal@gmail.com"}]
 license = {file = "LICENSE"}
 readme = "README.md"
-dynamic = ["description", "version"]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
-  "fastapi",
-  "polars",
-  "uvicorn",
-]
-
-[project.optional-dependencies]
-dev = [
-  "ruff",
+  "fastapi[standard-no-fastapi-cloud-cli]>=0.118.0",
+  "polars>=1.34.0",
 ]
 
 [project.urls]
@@ -25,6 +16,10 @@ Source = "https://github.com/heavywatal/sysinfocollector"
 
 [project.scripts]
 sice = "sice.main:main"
+
+[build-system]
+requires = ["uv_build>=0.8.24,<0.9.0"]
+build-backend = "uv_build"
 
 [tool.pyright]
 typeCheckingMode = "strict"
@@ -40,7 +35,11 @@ ignore = [
   "S101", # assert
   "DTZ",  # timezone
   "COM812", # trailing comma
-  "ISC001", # may conflict with formatter
   "TD",   # todo
   "FIX",  # todo
+]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.13.3",
 ]
