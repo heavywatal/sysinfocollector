@@ -2,13 +2,14 @@
 name = "sice"
 version = "0.1.0"
 description = "System Information Collector for Education"
-authors = [{name = "Watal M. Iwasaki", email = "heavywatal@gmail.com"}]
-license = {file = "LICENSE"}
+authors = [{ name = "Watal M. Iwasaki", email = "heavywatal@gmail.com" }]
+license = "MIT"
+license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-  "fastapi[standard-no-fastapi-cloud-cli]>=0.118.0",
-  "polars>=1.34.0",
+  "fastapi[standard-no-fastapi-cloud-cli]>=0.122.0",
+  "polars>=1.35.2",
 ]
 
 [project.urls]
@@ -18,7 +19,7 @@ Source = "https://github.com/heavywatal/sysinfocollector"
 sice = "sice.main:main"
 
 [build-system]
-requires = ["uv_build>=0.8.24,<0.9.0"]
+requires = ["uv_build>=0.9.11,<1.0.0"]
 build-backend = "uv_build"
 
 [tool.pyright]
@@ -27,19 +28,17 @@ typeCheckingMode = "strict"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-  "D1",   # missing docstring
-  "D203", # incompatible
-  "D213", # incompatible
+  "D1",     # missing docstring
+  "D203",   # incompatible
+  "D213",   # incompatible
   "ANN401", # Any
-  "T201", # print
-  "S101", # assert
-  "DTZ",  # timezone
+  "T201",   # print
+  "S101",   # assert
+  "DTZ",    # timezone
   "COM812", # trailing comma
-  "TD",   # todo
-  "FIX",  # todo
 ]
 
 [dependency-groups]
 dev = [
-  "ruff>=0.13.3",
+  "ruff>=0.14.6",
 ]
