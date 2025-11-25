@@ -1,5 +1,7 @@
 # sice: System Information Collector for Education
 
+[![.github/workflows/test.yml](https://github.com/heavywatal/sysinfocollector/actions/workflows/test.yml/badge.svg)](https://github.com/heavywatal/sysinfocollector/actions/workflows/test.yml)
+
 Install sice and its dependencies:
 ```sh
 git clone https://github.com/heavywatal/sysinfocollector.git
