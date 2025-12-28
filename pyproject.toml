@@ -6,10 +6,10 @@ authors = [{ name = "Watal M. Iwasaki", email = "heavywatal@gmail.com" }]
 license = "MIT"
 license-files = ["LICENSE"]
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-  "fastapi[standard-no-fastapi-cloud-cli]>=0.122.0",
-  "polars>=1.35.2",
+  "fastapi[standard-no-fastapi-cloud-cli]>=0.128.0",
+  "polars>=1.36.0",
 ]
 
 [project.urls]
@@ -19,7 +19,7 @@ Source = "https://github.com/heavywatal/sysinfocollector"
 sice = "sice.main:main"
 
 [build-system]
-requires = ["uv_build>=0.9.11,<1.0.0"]
+requires = ["uv_build>=0.9.18,<1.0.0"]
 build-backend = "uv_build"
 
 [tool.pyright]
@@ -40,5 +40,5 @@ ignore = [
 
 [dependency-groups]
 dev = [
-  "ruff>=0.14.6",
+  "ruff>=0.14.10",
 ]
