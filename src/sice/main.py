@@ -70,7 +70,9 @@ async def create_view() -> HTMLResponse:
     if config["list"].exists():
         tbl = pl.read_csv(config["list"], separator="\t")
         if not responses.is_empty():
-            tbl = tbl.join(responses, on="id", how="full", coalesce=True)
+            tbl = tbl.join(
+                responses, on="id", how="full", coalesce=True, maintain_order="left"
+            )
     else:
         tbl = responses
     with resources.files("sice").joinpath("view.html").open() as fin:
@@ -99,7 +101,7 @@ def message(res: dict[str, str]) -> str:
     return f"""
 Hello, {res["id"]}. Thank you for submitting your system information.
 
-{pprint.pformat(res)}
+{pprint.pformat(res, sort_dicts=False)}
 """
 
 
