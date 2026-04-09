@@ -36,6 +36,7 @@ body$RStudio = tryCatch(
   error = warning
 )
 body = append(body, as.list(installed))
+body$getwd = getwd()
 body$libPaths = paste(.libPaths(), collapse = ":")
 # str(body)
 
